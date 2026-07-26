@@ -1,0 +1,138 @@
+{
+  "name": "github-readme",
+  "displayName": "GitHub README",
+  "description": "View and edit GitHub README files directly inside VS Code.",
+  "version": "0.1.0",
+  "private": true,
+  "publisher": "itshd",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [],
+  "icon": "resources/icon-dark.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itshakemd/github-readme"
+  },
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "githubReadme.openView",
+        "title": "Open in Editor Tab",
+        "category": "GitHub README",
+        "icon": "$(layout)"
+      },
+      {
+        "command": "githubReadme.focusSidebar",
+        "title": "Focus Sidebar",
+        "category": "GitHub README",
+        "icon": "$(github)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "github-readme-sidebar",
+          "title": "GitHub README",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "github-readme-sidebar": [
+        {
+          "type": "webview",
+          "id": "githubReadme.sidebarView",
+          "name": "GitHub README"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "GitHub README",
+      "properties": {
+        "githubReadme.githubToken": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub Personal Access Token (classic, scope: repo). Used to read/write README files."
+        },
+        "githubReadme.defaultViewMode": {
+          "type": "string",
+          "enum": ["editor", "viewer", "split"],
+          "default": "editor",
+          "description": "How READMEs open: editor only, rendered viewer only, or side by side."
+        },
+        "githubReadme.showLineNumbers": {
+          "type": "boolean",
+          "default": true,
+          "description": "Display line numbers in the editor gutter."
+        },
+        "githubReadme.inlineSuggestions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show English word completions as faint text. Press Tab to accept."
+        },
+        "githubReadme.selectionToolbar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Bold, Italic, and Strikethrough actions when text is selected."
+        }
+      }
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "githubReadme.openView",
+          "when": "view == githubReadme.sidebarView",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "githubReadme.openView"
+        },
+        {
+          "command": "githubReadme.focusSidebar"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "dev:webview": "vite",
+    "build:webview": "vite build",
+    "build:ext": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --platform=node --external:vscode --format=cjs --minify",
+    "build": "npm run build:webview && npm run build:ext",
+    "vscode:prepublish": "npm run build",
+    "package": "npx @vscode/vsce package --no-dependencies",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@lezer/highlight": "^1.2.1",
+    "an-array-of-english-words": "^2.0.0",
+    "marked": "^15.0.12",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/lang-markdown": "^6.5.2",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/state": "^6.7.5",
+    "@codemirror/view": "^6.43.12",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.6",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@types/vscode": "^1.85.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "esbuild": "^0.28.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.6",
+    "globals": "^17.12.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.69.0",
+    "vite": "^8.3.0"
+  }
+}
