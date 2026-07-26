@@ -1,0 +1,125 @@
+import { useState } from "react";
+import "./App.css";
+import ReposSidebar from "./components/ReposSidebar";
+import TabHeader from "./components/TabHeader";
+import ConnectCard from "./components/ConnectCard";
+import ReadmeWorkspace from "./components/ReadmeWorkspace";
+import { useReadmeEditor } from "./hooks/useReadmeEditor";
+import type { ReadmeData, RepoInfo, UserProfile, ViewMode } from "./types";
+
+interface AppProps {
+  getToken: () => string;
+  saveToken: (token: string) => Promise<void>;
+  listRepos: () => Promise<RepoInfo[]>;
+  fetchReadme: (fullName: string) => Promise<ReadmeData>;
+  saveReadme: (fullName: string, content: string, sha: string | null, message?: string) => Promise<string>;
+  openReadme: (fullName: string, content: string) => Promise<string>;
+  watchFile: (vaultPath: string, onChange: (content: string) => void) => () => void;
+  fetchProfile: () => Promise<UserProfile>;
+  openSettings: () => void;
+  defaultViewMode: ViewMode;
+  showLineNumbers: boolean;
+  inlineSuggestions: boolean;
+  showSelectionToolbar: boolean;
+  renderMarkdown: (markdown: string, el: HTMLElement) => Promise<() => void>;
+}
+
+export default function App({
+  getToken,
+  listRepos,
+  fetchReadme,
+  saveReadme,
+  fetchProfile,
+  openSettings,
+  openReadme,
+  watchFile,
+  defaultViewMode,
+  showLineNumbers,
+  inlineSuggestions,
+  showSelectionToolbar,
+  renderMarkdown,
+}: AppProps) {
+  const hasToken = getToken().length > 0;
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const {
+    editorKey,
+    isWatching,
+    selectedRepo,
+    readme,
+    readmeDraft,
+    setReadmeDraft,
+    readmeLoading,
+    readmeError,
+    readmeSaving,
+    readmeSaved,
+    commitMsg,
+    setCommitMsg,
+    viewMode,
+    setViewMode,
+    viewerRef,
+    handleSelectRepo,
+    handlePushCommit,
+    handleOpenInVSCode,
+  } = useReadmeEditor(defaultViewMode, fetchReadme, saveReadme, openReadme, watchFile);
+
+  return (
+    <div className="github-readme-layout">
+      <aside className={`github-readme-sidebar ${sidebarOpen ? "" : "collapsed"}`}>
+        <ReposSidebar
+          getToken={getToken}
+          listRepos={listRepos}
+          fetchProfile={fetchProfile}
+          onOpenSettings={openSettings}
+          onSelectRepo={(repo) => { void handleSelectRepo(repo); }}
+          selectedFullName={selectedRepo?.full_name ?? null}
+          openingFullName={readmeLoading ? selectedRepo?.full_name ?? null : null}
+        />
+      </aside>
+
+      <div className="github-readme-main">
+        <TabHeader
+          commitMsg={commitMsg}
+          setCommitMsg={setCommitMsg}
+          handlePushCommit={handlePushCommit}
+          selectedRepo={!!selectedRepo}
+          hasReadme={!!readme}
+          hasDraftChanges={readmeDraft !== readme?.content}
+          readmeSaving={readmeSaving}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          isWatching={isWatching}
+          handleOpenInVSCode={handleOpenInVSCode}
+          repoFullName={selectedRepo?.full_name ?? null}
+          sidebarOpen={sidebarOpen}
+          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        />
+
+        <div className={`github-readme-root ${selectedRepo ? "fill" : ""}`}>
+          <ReadmeWorkspace
+            selectedRepo={selectedRepo}
+            readmeLoading={readmeLoading}
+            readmeError={readmeError}
+            readme={readme}
+            readmeDraft={readmeDraft}
+            setReadmeDraft={setReadmeDraft}
+            viewMode={viewMode}
+            editorKey={editorKey}
+            viewerRef={viewerRef}
+            showLineNumbers={showLineNumbers}
+            inlineSuggestions={inlineSuggestions}
+            showSelectionToolbar={showSelectionToolbar}
+            renderMarkdown={renderMarkdown}
+            readmeSaved={readmeSaved}
+          />
+
+          {!hasToken && <ConnectCard openSettings={openSettings} />}
+
+          {!selectedRepo && hasToken && (
+            <div className="github-readme-empty">GitHub readme</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
