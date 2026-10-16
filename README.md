@@ -88,19 +88,19 @@ GitHub README keeps repository browsing and documentation work together in one f
 
 Write and refine your README with the repository list visible beside the editor.
 
-![Markdown editor in Visual Studio Code](src/assets/Screenshot%202026-09-22%20022119.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dbc6cd94-a9f4-43e5-a771-4f7a246890d8" />
 
 ### Live preview
 
 Review the rendered README before publishing it back to GitHub.
 
-![README live preview in Visual Studio Code](src/assets/Screenshot%202026-09-22%20022152.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/36d816d0-9738-433c-8a16-7ef25b2f46db" />
 
 ### Split view
 
 Edit Markdown and compare the rendered result side by side.
 
-![README split view in Visual Studio Code](src/assets/Screenshot%202026-09-22%20022214.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/803d11fa-0595-481e-944a-ac458810cd28" />
 
 ## Why it stands out
 
