@@ -433,6 +433,12 @@ html, body, #root {
   cursor: default;
 }
 
+/* Header Spacer on mobile / portrait screen */
+.github-tab-header-spacer {
+  flex: 1 1 auto;
+}
+
+
 .github-readme-sidebar.modal-mode {
   transform: translateY(100%);
   opacity: 0;
